@@ -15,9 +15,8 @@ app.post("/webhook/chatwoot", async (req, res) => {
         console.log(JSON.stringify(req.body, null, 2));
 
 
-        const data = req.body.attributes;
-
-
+        const data = req.body;
+        
         if (!data) {
             console.log("⚠️ No existe attributes");
             return res.sendStatus(200);
