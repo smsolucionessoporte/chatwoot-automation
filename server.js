@@ -5,8 +5,6 @@ const app = express();
 
 app.use(express.json({ limit: "20mb" }));
 
-const data = req.body.attributes;
-
 console.log("Evento:", data.event);
 console.log("Tipo mensaje:", data.message_type);
 console.log("Conversación:", data.conversation.id);
