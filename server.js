@@ -16,7 +16,7 @@ app.post("/webhook/chatwoot", async (req, res) => {
 
 
         const data = req.body;
-        
+
         if (!data) {
             console.log("⚠️ No existe attributes");
             return res.sendStatus(200);
@@ -113,6 +113,24 @@ app.post("/webhook/chatwoot", async (req, res) => {
 
 
             console.log("👤 Asignado a Rafael");
+
+            // ENVIAR MENSAJE AUTOMÁTICO
+
+await axios.post(
+    `${process.env.CHATWOOT_URL}/api/v1/accounts/${process.env.ACCOUNT_ID}/conversations/${conversationId}/messages`,
+    {
+        content: "¡Hola! 👋 Gracias por escribirnos. En breve un asesor se pondrá en contacto con vos.",
+        message_type: "outgoing",
+        private: false
+    },
+    {
+        headers: {
+            api_access_token: process.env.CHATWOOT_TOKEN
+        }
+    }
+);
+
+console.log("💬 Mensaje enviado");
 
         } else {
 
