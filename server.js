@@ -119,7 +119,33 @@ app.post("/webhook/chatwoot", async (req, res) => {
 await axios.post(
     `${process.env.CHATWOOT_URL}/api/v1/accounts/${process.env.ACCOUNT_ID}/conversations/${conversationId}/messages`,
     {
-        content: "¡Hola! 👋 Gracias por escribirnos. En breve un asesor se pondrá en contacto con vos.",
+        content: `¡Hola! 👋 Gracias por comunicarte con *SM Soluciones*.
+
+Para poder asesorarte mejor, contanos:
+
+✅ ¿Qué tipo de negocio tenés?
+
+✅ ¿Qué necesitás gestionar?
+
+• Stock
+
+• Ventas
+
+• Facturación
+
+• Cuentas corrientes de clientes
+
+• Cuentas corrientes de proveedores
+
+• Etiquetas
+
+• Código de barras
+
+• Otro
+
+Además podemos coordinar una demostración gratuita por Zoom para mostrarte el funcionamiento del sistema.
+
+📅 ¿Qué día y horario te queda cómodo?`,
         message_type: "outgoing",
         private: false
     },
