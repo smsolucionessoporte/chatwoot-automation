@@ -7,6 +7,19 @@ app.use(express.json({ limit: "20mb" }));
 
 app.post("/webhook/chatwoot", async (req, res) => {
 
+    console.log("🔥 LLEGO WEBHOOK CHATWOOT");
+    console.log("BODY:");
+    console.log(JSON.stringify(req.body));
+
+    res.sendStatus(200);
+
+});
+
+app.post("/webhook/chatwoot", async (req, res) => {
+
+    console.log("=== WEBHOOK RECIBIDO ===");
+    console.log(JSON.stringify(req.body, null, 2));
+
     try {
 
         const mensaje =
