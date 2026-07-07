@@ -53,23 +53,28 @@ app.post("/webhook/chatwoot", async (req, res) => {
             console.log("🏷️ Etiqueta agregada");
 
 
-            // ASIGNAR A RAFAEL
 
-            await axios.post(
-                `${process.env.CHATWOOT_URL}/api/v1/accounts/${process.env.ACCOUNT_ID}/conversations/${conversationId}/assignments`,
-                {
-                    assignee_id: Number(process.env.RAFAEL_ID)
-                },
-                {
-                    headers: {
-                        api_access_token: process.env.CHATWOOT_TOKEN
-                    }
+        // ASIGNAR A RAFAEL
+
+        console.log("Asignando conversación", conversationId, "a usuario", process.env.RAFAEL_ID);
+
+        const asignacion = await axios.post(
+            `${process.env.CHATWOOT_URL}/api/v1/accounts/${process.env.ACCOUNT_ID}/conversations/${conversationId}/assignments`,
+            {
+                assignee_id: Number(process.env.RAFAEL_ID)
+            },
+            {
+                headers: {
+                    api_access_token: process.env.CHATWOOT_TOKEN
                 }
-            );
+            }
+        );
 
-            console.log("👤 Asignado a Rafael");
+        console.log("Respuesta asignación:");
+        console.log(asignacion.data);
 
-        }
+        console.log("👤 Asignado a Rafael");
+                }
 
 
     } catch (e) {
