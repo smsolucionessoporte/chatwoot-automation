@@ -24,6 +24,59 @@ app.post("/webhook/chatwoot", async (req, res) => {
 
 
         console.log("Evento:", data.event);
+
+        // ─── NUEVO: alta automática de prospecto por etiqueta ───
+if (data.event === "conversation_updated") {
+    const labels = data.labels || data.conversation?.labels || [];
+
+    console.log("🏷️ Etiquetas en conversation_updated:", labels);
+
+    const conversationId = data.id || data.conversation?.id;
+    const contacto = data.meta?.sender || data.contact || {};
+    const telefono = contacto.phone_number;
+    const nombreContacto = contacto.name;
+
+    let origen = null;
+    let chatwootAgentId = null;
+
+    if (labels.includes("prospecto-redes")) {
+        console.log("📱 Etiqueta prospecto-redes detectada");
+        origen = "prospecto-redes";
+        chatwootAgentId = null; // siempre Rafael, no hace falta el agente
+    }
+
+    if (labels.includes("prospecto-interno")) {
+        console.log("💬 Etiqueta prospecto-interno detectada");
+        origen = "prospecto-interno";
+        chatwootAgentId = data.conversation?.assignee_id || data.meta?.assignee?.id || null;
+    }
+
+    if (!origen) {
+        console.log("Sin etiquetas de prospecto relevantes, se ignora");
+        return res.sendStatus(200);
+    }
+
+    console.log("DEBUG telefono:", telefono, "| nombreContacto:", nombreContacto);
+    console.log('DEBUG origen:', origen, '| chatwoot_agent_id:', chatwootAgentId);
+
+    if (!telefono) {
+        console.log("⚠️ No se encontró teléfono en el payload, no se puede crear el prospecto");
+        return res.sendStatus(200);
+    }
+
+    try {
+        const resp = await axios.post(
+            `${process.env.PROSPECTOS_SM_URL}/api/prospectos/auto-crear`,
+            { nombre_contacto: nombreContacto, telefono, origen, chatwoot_agent_id: chatwootAgentId },
+            { headers: { 'x-api-key': process.env.PROSPECTOS_SM_API_KEY } }
+        );
+        console.log("✅ Prospecto creado/verificado en prospectos-sm:", resp.data);
+    } catch (err) {
+        console.log("❌ Error creando prospecto en prospectos-sm:", err.response?.data || err.message);
+    }
+
+    return res.sendStatus(200);
+}
         console.log("Tipo mensaje:", data.message_type);
         console.log("Conversación:", data.conversation?.id);
 
@@ -126,13 +179,13 @@ Para poder asesorarte mejor, contanos:
 ✅ ¿Qué tipo de negocio tenés?
 
 ✅ ¿Qué necesitás gestionar?
-• Stock
-• Ventas
-• Facturación
-• Cuentas corrientes clientes/proveedores
-• Imprimir etiquetas
-• Vinculación con códigos de barra de balanza
-• Otro
+- Stock
+- Ventas
+- Facturación
+- Cuentas corrientes clientes/proveedores
+- Imprimir etiquetas
+- Vinculación con códigos de barra de balanza
+- Otro
 
 Además podemos coordinar una demostración gratuita por Zoom para mostrarte el funcionamiento del sistema.
 
