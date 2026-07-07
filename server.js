@@ -5,10 +5,6 @@ const app = express();
 
 app.use(express.json({ limit: "20mb" }));
 
-console.log("Evento:", data.event);
-console.log("Tipo mensaje:", data.message_type);
-console.log("Conversación:", data.conversation.id);
-
 app.post("/webhook/chatwoot", async (req, res) => {
 
     console.log("🔥 WEBHOOK RECIBIDO");
@@ -16,6 +12,10 @@ app.post("/webhook/chatwoot", async (req, res) => {
     try {
 
         const data = req.body.attributes;
+
+        console.log("Evento:", data.event);
+        console.log("Tipo mensaje:", data.message_type);
+        console.log("Conversación:", data.conversation.id);
 
         if (!data) {
             console.log("Sin attributes");
