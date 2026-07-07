@@ -7,25 +7,23 @@ app.use(express.json({ limit: "20mb" }));
 
 app.post("/webhook/chatwoot", async (req, res) => {
 
-    console.log("🔥 LLEGO WEBHOOK CHATWOOT");
-    console.log("BODY:");
-    console.log(JSON.stringify(req.body));
-
-    res.sendStatus(200);
-
-});
-
-app.post("/webhook/chatwoot", async (req, res) => {
-
-    console.log("=== WEBHOOK RECIBIDO ===");
-    console.log(JSON.stringify(req.body, null, 2));
+    console.log("🔥 WEBHOOK RECIBIDO");
 
     try {
 
-        const mensaje =
-            req.body.messages?.[0]?.content_attributes?.processed_message_content || "";
+        const data = req.body.attributes;
 
-        const conversationId = req.body.id;
+        if (!data) {
+            console.log("Sin attributes");
+            return res.sendStatus(200);
+        }
+
+        const mensaje = data.content || "";
+        const conversationId = data.conversation?.id;
+
+        console.log("Mensaje:", mensaje);
+        console.log("Conversacion:", conversationId);
+
 
         if (
             mensaje.includes("¡Hola! Quiero más información") ||
@@ -33,9 +31,11 @@ app.post("/webhook/chatwoot", async (req, res) => {
             mensaje.includes("ig.me")
         ) {
 
-            console.log("Publicidad detectada");
+            console.log("📢 Publicidad detectada");
 
-            // Agregar etiqueta
+
+            // AGREGAR ETIQUETA
+
             await axios.post(
                 `${process.env.CHATWOOT_URL}/api/v1/accounts/${process.env.ACCOUNT_ID}/conversations/${conversationId}/labels`,
                 {
@@ -50,9 +50,11 @@ app.post("/webhook/chatwoot", async (req, res) => {
                 }
             );
 
-            console.log("Etiqueta agregada");
+            console.log("🏷️ Etiqueta agregada");
 
-            // Asignar agente
+
+            // ASIGNAR A RAFAEL
+
             await axios.post(
                 `${process.env.CHATWOOT_URL}/api/v1/accounts/${process.env.ACCOUNT_ID}/conversations/${conversationId}/assignments`,
                 {
@@ -65,26 +67,31 @@ app.post("/webhook/chatwoot", async (req, res) => {
                 }
             );
 
-            console.log("Asignado a Rafael");
+            console.log("👤 Asignado a Rafael");
+
         }
+
 
     } catch (e) {
 
-        console.log("ERROR");
+        console.log("❌ ERROR");
         console.log(e.response?.data || e.message);
 
     }
+
 
     res.sendStatus(200);
 
 });
 
-app.get("/", (req, res) => {
+
+app.get("/", (req,res)=>{
     res.send("Servidor funcionando");
 });
 
+
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+app.listen(PORT, ()=>{
     console.log("Servidor iniciado en puerto " + PORT);
 });
