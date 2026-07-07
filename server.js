@@ -126,21 +126,12 @@ Para poder asesorarte mejor, contanos:
 ✅ ¿Qué tipo de negocio tenés?
 
 ✅ ¿Qué necesitás gestionar?
-
 • Stock
-
 • Ventas
-
 • Facturación
-
-• Cuentas corrientes de clientes
-
-• Cuentas corrientes de proveedores
-
-• Etiquetas
-
-• Código de barras
-
+• Cuentas corrientes clientes/proveedores
+• Imprimir etiquetas
+• Vinculación con códigos de barra de balanza
 • Otro
 
 Además podemos coordinar una demostración gratuita por Zoom para mostrarte el funcionamiento del sistema.
