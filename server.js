@@ -5,6 +5,12 @@ const app = express();
 
 app.use(express.json({ limit: "20mb" }));
 
+const data = req.body.attributes;
+
+console.log("Evento:", data.event);
+console.log("Tipo mensaje:", data.message_type);
+console.log("Conversación:", data.conversation.id);
+
 app.post("/webhook/chatwoot", async (req, res) => {
 
     console.log("🔥 WEBHOOK RECIBIDO");
@@ -18,19 +24,23 @@ app.post("/webhook/chatwoot", async (req, res) => {
             return res.sendStatus(200);
         }
 
-        const mensaje = data.content || "";
-        const conversationId = data.conversation?.id;
+            const mensaje = data.content || "";
+            const conversationId = data.conversation?.id;
 
-        console.log("Mensaje:", mensaje);
-        console.log("Conversacion:", conversationId);
+            console.log("Mensaje:", mensaje);
+            console.log("Conversacion:", conversationId);
 
+            if (data.message_type !== "incoming") {
+                console.log("Mensaje no entrante, ignoro");
+                return res.sendStatus(200);
+            }
 
-        if (
-            mensaje.includes("¡Hola! Quiero más información") ||
-            mensaje.includes("fb.me") ||
-            mensaje.includes("ig.me")
-        ) {
+            const esPublicidad =
+                mensaje.includes("Quiero más información") ||
+                mensaje.includes("fb.me") ||
+                mensaje.includes("ig.me");
 
+            if (esPublicidad) { 
             console.log("📢 Publicidad detectada");
 
 
