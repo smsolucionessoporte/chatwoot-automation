@@ -10,7 +10,12 @@ app.post("/webhook/chatwoot", (req, res) => {
     console.log("WEBHOOK RECIBIDO");
     console.log("================================");
 
-    console.log(JSON.stringify(req.body, null, 2));
+    console.log("EVENTO:", req.body.event);
+    console.log("CONVERSACION:", req.body.id);
+
+    console.log("MENSAJES:");
+
+    console.log(JSON.stringify(req.body.messages, null, 2));
 
     res.sendStatus(200);
 
